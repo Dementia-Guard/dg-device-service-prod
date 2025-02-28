@@ -23,10 +23,8 @@ func SetupRouter() *gin.Engine {
 	// Register all route groups
 	api := router.Group("/api")
 	{
-		UserRoutes(api)
-		PaymentRoutes(api)
-		OrderRoutes(api)
 		PatientRoutes(api)
+		SensorRoutes(api)
 	}
 
 	// Handle 404 Not Found Routes

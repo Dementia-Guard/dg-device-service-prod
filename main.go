@@ -10,23 +10,25 @@ import (
 )
 
 func main() {
+	// Load ENV Variables
 	config.LoadEnv()
 
-	config.InitFirebase() // Initialize Firebase
+	// Initialize Firebase
+	config.InitFirebase() 
 
-	// 1️⃣ Initialize database first
+	// Initialize database first
 	config.ConnectDB()
 
-	// 2️⃣ Get PORT from environment variable
+	// Get PORT from environment variable
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
 		port = "8080"
 	}
 
-	// 3️⃣ Setup routes
+	// Setup routes
 	router := routes.SetupRouter()
 
-	// 4️⃣ Start server on the specified port
-	fmt.Printf("🚀 Server running on port %s\n", port)
+	// Start server on the specified port
+	fmt.Printf("🚀 Server is running on port %s\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }
