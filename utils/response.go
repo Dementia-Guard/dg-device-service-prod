@@ -8,27 +8,27 @@ import (
 
 type Response struct{
 	Timestamp string `json:"timestamp"`
-	Status int `json:"status"`
+	Code int `json:"code"`
 	Message string `json:"message"`
-	Code string `json:"code"`
+	Status bool `json:"status"`
 	Data interface{} `json:"data,omitempty"`
 }
 
-func SuccessResponse(c *gin.Context,status int, message string, code string, data interface{}){
-	c.JSON(status,Response{
+func SuccessResponse(c *gin.Context,code int, message string, status bool, data interface{}){
+	c.JSON(code,Response{
 		Timestamp: time.Now().UTC().Format(time.RFC3339),
-		Status: status,
-		Message: message,
 		Code: code,
+		Message: message,
+		Status: status,
 		Data: data,
 	})
 }
 
-func ErrorResponse(c *gin.Context, status int,message string,code string){
-	c.JSON(status,Response{
+func ErrorResponse(c *gin.Context, code int,message string,status bool){
+	c.JSON(code,Response{
 		Timestamp: time.Now().UTC().Format(time.RFC3339),
-		Status:    status,
+		Code:    code,
 		Message:   message,
-		Code:      code,
+		Status:      status,
 	})
 }

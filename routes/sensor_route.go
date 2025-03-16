@@ -13,7 +13,7 @@ func SensorRoutes(api *gin.RouterGroup) {
 	sensorGroup := api.Group("/sensor/data")
 	{
 		sensorGroup.GET("/", func(c *gin.Context) {
-			utils.SuccessResponse(c, http.StatusOK, "Sensor API Online", "SUCCESS", map[string]string{"message": "Hello from Sensor API"})
+			utils.SuccessResponse(c, http.StatusOK, "Sensor API Online", true, map[string]string{"message": "Hello from Sensor API"})
 		})
 		// sensorGroup.GET("/data", controllers.GetSensorData)
 		// Define routes for sensor data retrieval

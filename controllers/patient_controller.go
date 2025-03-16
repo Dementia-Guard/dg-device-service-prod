@@ -3,7 +3,7 @@ package controllers
 import (
 	"api/services"
 	"api/utils"
-	// "api/models"
+	"api/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -16,7 +16,7 @@ func GetPatients(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not fetch patients"})
 		return
 	}
-	utils.SuccessResponse(c, http.StatusOK, "Patients fetched successfully", "SUCCESS", patients)
+	utils.SuccessResponse(c, http.StatusOK, "Patients fetched successfully", true, patients)
 }
 
 // GetPatientById handles fetching a patient by ID
@@ -33,7 +33,29 @@ func GetPatientById(c *gin.Context) {
 		return
 	}
 
-	utils.SuccessResponse(c, http.StatusOK, "Patient fetched successfully", "SUCCESS", patient)
+	utils.SuccessResponse(c, http.StatusOK, "Patient fetched successfully", true, patient)
+}
+
+func EditPatientById(c *gin.Context) {
+    patientId := c.Param("id")
+    if patientId == "" {
+        utils.ErrorResponse(c, http.StatusNotFound, "Patient ID is required", false)
+        return
+    }
+
+    var updatedPatient models.Patient
+    if err := c.ShouldBindJSON(&updatedPatient); err != nil {
+        utils.ErrorResponse(c, http.StatusBadRequest, "Invalid request body", false)
+        return
+    }
+
+    patient, err := services.EditPatientByIdService(patientId, &updatedPatient)
+    if err != nil {
+        utils.ErrorResponse(c, http.StatusNotFound, err.Error(), false)
+        return
+    }
+
+    utils.SuccessResponse(c, http.StatusOK, "Patient updated successfully", true, patient)
 }
 
 // Create a new patient

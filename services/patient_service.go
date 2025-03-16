@@ -23,6 +23,14 @@ func GetPatientByIdService(patientId string) (*models.Patient, error) {
 	return repositories.GetPatientById(patientId)
 }
 
+func EditPatientByIdService(patientId string, updatedPatient *models.Patient) (*models.Patient, error) {
+    if patientId == "" {
+        return nil, errors.New("patient ID is required")
+    }
+    return repositories.UpdatePatientById(patientId, updatedPatient)
+}
+
+
 // Create a new patient
 // func CreatePatientService(patient models.Patient) (*models.Patient, error) {
 // 	newPatient, err := repositories.AddPatient(patient)

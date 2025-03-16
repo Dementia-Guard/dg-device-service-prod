@@ -14,7 +14,7 @@ func PatientRoutes(api *gin.RouterGroup) {
 	{
 		// Route to check if the patient API is online
 		patientGroup.GET("/", func(c *gin.Context) {
-			utils.SuccessResponse(c, http.StatusOK, "Patient API Online", "SUCCESS", map[string]string{"message": "Hello From Patient API"})
+			utils.SuccessResponse(c, http.StatusOK, "Patient API Online", true, map[string]string{"message": "Hello From Patient API"})
 		})
 
 		// Trigger error for testing purposes
@@ -27,6 +27,9 @@ func PatientRoutes(api *gin.RouterGroup) {
 
 		// Route to get a single patient by ID
 		patientGroup.GET("/patients/:id", controllers.GetPatientById)
+		
+		// Route to update a single patient by ID
+		patientGroup.PUT("/patients/:id", controllers.EditPatientById)
 
 		// Route to create a new patient
 		// patientGroup.POST("/patients", controllers.CreatePatient)

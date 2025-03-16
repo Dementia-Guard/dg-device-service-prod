@@ -3,11 +3,14 @@ package repositories
 import (
 	"api/config"
 	"api/models"
+	"encoding/json" 
+	"cloud.google.com/go/firestore"
 	"context"
 	"errors"
-	"log"
-
 	"google.golang.org/api/iterator"
+	"google.golang.org/grpc/codes"
+    "google.golang.org/grpc/status"
+	"log"
 )
 
 // Lazy initialization of patient collection
@@ -70,6 +73,50 @@ func GetPatientById(patientId string) (*models.Patient, error) {
 	}
 
 	return &patient, nil
+}
+
+func UpdatePatientById(patientId string, updatedPatient *models.Patient) (*models.Patient, error) {
+    ctx := context.Background()
+    patientRef := config.FirestoreClient.Collection(patientCollection).Doc(patientId)
+    
+    // First check if the patient document exists
+    doc, err := patientRef.Get(ctx)
+
+    if err != nil || doc ==nil {
+        if status.Code(err) == codes.NotFound {
+            log.Printf("❌ Patient with ID %s not found", patientId)
+            return nil, errors.New("patient not found")
+        }
+        log.Printf("❌ Error checking patient existence: %v", err)
+        return nil, errors.New("failed to check patient existence")
+    }
+    
+    // Only proceed with update if the document exists
+    // Convert struct to map[string]interface{}
+    patientData := make(map[string]interface{})
+    patientJSON, _ := json.Marshal(updatedPatient) // Convert struct to JSON
+    json.Unmarshal(patientJSON, &patientData)      // Convert JSON to map
+    
+    _, err = patientRef.Set(ctx, patientData, firestore.MergeAll)
+    if err != nil {
+        log.Printf("❌ Error updating patient with ID %s: %v", patientId, err)
+        return nil, errors.New("failed to update patient data")
+    }
+    
+    // Fetch the updated patient document
+    updatedDoc, err := patientRef.Get(ctx)
+    if err != nil {
+        log.Printf("❌ Error fetching updated patient data: %v", err)
+        return nil, errors.New("failed to fetch updated patient data")
+    }
+    
+    var updated models.Patient
+    if err := updatedDoc.DataTo(&updated); err != nil {
+        log.Printf("❌ Error decoding updated patient data: %v", err)
+        return nil, errors.New("failed to decode updated patient data")
+    }
+    
+    return &updated, nil
 }
 
 // Add a new patient to Firestore
