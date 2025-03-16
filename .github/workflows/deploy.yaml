@@ -3,7 +3,7 @@ name: "Build and Deploy to Cloud Run"
 on:
   push:
     branches:
-      - "no deploy"
+      - "master"
 
 env:
   PROJECT_ID: "${{ secrets.PROJECT_ID }}"
@@ -54,6 +54,7 @@ jobs:
             --allow-unauthenticated \
             --set-env-vars SERVER_PORT=${{ secrets.SERVER_PORT }} \
             --set-env-vars DB_NAME=${{ secrets.DB_NAME }} \
+            --set-env-vars FIRE_CRED_KEY=${{ secrets.FIRE_CRED_KEY }} \
             --set-env-vars MONGO_URI=${{ secrets.MONGO_URI }}
 
       - name: "Show output"
