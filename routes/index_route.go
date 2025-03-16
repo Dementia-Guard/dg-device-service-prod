@@ -26,7 +26,7 @@ func SetupRouter() *gin.Engine {
 	})
 
 	// Register all route groups
-	api := router.Group("/device")
+	api := router.Group("/route")
 	{
 		PatientRoutes(api)
 		SensorRoutes(api)
