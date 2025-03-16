@@ -20,8 +20,13 @@ func SetupRouter() *gin.Engine {
 		}
 	}))
 
+	// Add status route to show service is online
+	router.GET("/", func(c *gin.Context) {
+		utils.SuccessResponse(c, http.StatusOK, "Device Server Online", true, map[string]string{"message": "Hello From Device API"})
+	})
+
 	// Register all route groups
-	api := router.Group("/api")
+	api := router.Group("/device")
 	{
 		PatientRoutes(api)
 		SensorRoutes(api)
